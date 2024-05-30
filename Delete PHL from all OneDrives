@@ -1,0 +1,25 @@
+# Connect to SharePoint Online 
+$adminSiteUrl = "https://ayuvaaa-admin.sharepoint.com" 
+Connect-SPOService -Url $adminSiteUrl 
+# Get all OneDrive sites 
+$onedriveSites = Get-SPOSite -IncludePersonalSite $true -Limit all -Filter "Url -like '-my.sharepoint.com/personal/'"  
+foreach ($site in $onedriveSites) { 
+   Write-Host "Processing site: $($site.Url)" 
+   # Connect to the user's OneDrive site 
+   Connect-PnPOnline -Url $site.Url -useweblogin 
+   # Try to get the Preservation Hold library 
+   try { 
+       $preservationHoldLibrary = Get-PnPList -Identity "Preservation Hold Library" 
+       if ($preservationHoldLibrary -ne $null) { 
+           Write-Host "Found Preservation Hold Library in: $($site.Url)" 
+           # Delete the Preservation Hold Library 
+           Get-PnPList -Identity "Preservation Hold Library" | Get-PnPListItem -PageSize 100 -ScriptBlock { 
+    Param($items) Invoke-PnPQuery } | ForEach-Object { $_.Recycle() | Out-Null} 
+           Write-Host "Deleted Preservation Hold Library from: $($site.Url)" 
+       } 
+   } catch { 
+       Write-Host "Preservation Hold Library not found in: $($site.Url)" 
+   } 
+   # Disconnect from the site 
+   Disconnect-PnPOnline 
+} 
