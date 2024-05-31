@@ -1,4 +1,8 @@
-# Connect to SharePoint Online 
+#This script will remove the preservation hold libraries from all the OneDrive accounts. 
+#Prior that you would have to disable retention policy for onedrive accounts and grant yourself as site collection admin for all OneDrives.
+#Script to grant yourself site collection admin for all OneDrive is also added.
+
+#Connect to SharePoint Online 
 $adminSiteUrl = "https://ayuvaaa-admin.sharepoint.com" 
 Connect-SPOService -Url $adminSiteUrl 
 # Get all OneDrive sites 
