@@ -1,0 +1,9 @@
+# Connect to SharePoint Online
+Connect-sposervice -url https://ayuvaaa-admin.sharepoint.com
+ 
+$SitesCollections = Get-SPOSite -IncludePersonalSite $true -Limit all -Filter "Url -like '-my.sharepoint.com/personal/'"  
+#Iterate through each site collection  
+ForEach($Site in $SitesCollections)  
+{  
+  Set-SPOUser -Site $Site -LoginName ayush@ayuvaaa.onmicrosoft.com -IsSiteCollectionAdmin $True
+   }  
